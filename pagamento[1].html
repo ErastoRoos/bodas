@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bodas de Ouro • Pagamento (Pix)</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#111826;
+      --text:#f6f2e6;
+      --muted:#c8b99a;
+      --gold:#d8b86a;
+      --gold2:#b88a2b;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 15% 10%, rgba(216,184,106,.14), transparent 60%),
+        radial-gradient(900px 600px at 85% 15%, rgba(184,138,43,.12), transparent 60%),
+        linear-gradient(180deg, #070a0f, #0b0f14 35%, #070a0f);
+      color:var(--text);
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:26px 18px 90px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+    .back{
+      color:var(--muted);text-decoration:none;
+      border:1px solid rgba(216,184,106,.20);
+      padding:10px 12px;border-radius:12px;
+      background: rgba(17,24,38,.38);
+    }
+    .title{margin:0;font-size:18px;letter-spacing:.6px}
+    .panel{
+      border:1px solid rgba(216,184,106,.18);
+      background: linear-gradient(180deg, rgba(17,24,38,.78), rgba(15,23,36,.72));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .p-in{padding:18px}
+    .muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns: 1.2fr .8fr;gap:14px;margin-top:14px;}
+    @media (max-width: 880px){ .grid{grid-template-columns: 1fr;} }
+    .box{
+      border:1px solid rgba(216,184,106,.16);
+      border-radius: 18px;
+      background: rgba(0,0,0,.18);
+      padding:14px;
+    }
+    .row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(216,184,106,.12);}
+    .row:last-child{border-bottom:none}
+    .total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid rgba(216,184,106,.18);font-size:16px;}
+    .btn{
+      appearance:none;border:none;cursor:pointer;
+      padding:12px 14px;border-radius:14px;
+      background: linear-gradient(180deg, rgba(216,184,106,.95), rgba(184,138,43,.95));
+      color:#1b1203;font-weight:900;
+      box-shadow: 0 14px 28px rgba(216,184,106,.15);
+      width:100%;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn2{
+      width:100%;
+      padding:11px 14px;border-radius:14px;
+      background: transparent;cursor:pointer;
+      border:1px solid rgba(216,184,106,.28);
+      color: var(--text);
+      margin-top:10px;
+    }
+    .pixline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid rgba(216,184,106,.12);}
+    .pixline code{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(216,184,106,.16);
+      padding:8px 10px;border-radius:12px;
+      color: var(--text);
+      word-break:break-all;
+      display:block;width:100%;
+    }
+    .qr{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;min-height: 320px;}
+    #qrcode{padding:12px;background:#fff;border-radius:16px}
+    .small{font-size:12px;color:var(--muted);line-height:1.35}
+    .ok{
+      display:inline-block;padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(216,184,106,.22);
+      background: rgba(17,24,38,.45);
+      color: var(--muted);font-size:12px;margin-left:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="index.html">← Voltar</a>
+      <h1 class="title">Pagamento via Pix <span class="ok">Bodas de Ouro</span></h1>
+    </div>
+
+    <div class="panel">
+      <div class="p-in">
+        <div class="muted">Confira o resumo, faça o Pix e depois envie o comprovante pelo WhatsApp do Lídio.</div>
+
+        <div class="grid">
+          <div class="box">
+            <h2 style="margin:0 0 10px;font-size:16px">Resumo do presente</h2>
+            <div id="summary"></div>
+            <div class="total">
+              <div>Total</div>
+              <div><b id="total">R$ 0,00</b></div>
+            </div>
+          </div>
+
+          <div class="box">
+            <h2 style="margin:0 0 10px;font-size:16px">Pix</h2>
+
+            <div class="pixline">
+              <div class="muted">Favorecido:</div>
+              <div><b>Lídio Oto Roos</b></div>
+            </div>
+
+            <div class="pixline" style="border-bottom:none;padding-bottom:0">
+              <div class="muted">Chave Pix (CPF):</div>
+              <div style="width:100%">
+                <code id="pixKey">32522134949</code>
+                <button class="btn2" id="copyKey" type="button">Copiar chave Pix</button>
+              </div>
+            </div>
+
+            <div style="margin-top:14px" class="qr">
+              <div class="small" style="text-align:center">
+                QR Code gerado para o valor total selecionado. Se preferir, use a chave CPF acima.
+              </div>
+              <div id="qrcode" aria-label="QR Code Pix"></div>
+              <button class="btn2" id="copyPayload" type="button">Copiar “Pix copia e cola”</button>
+              <div class="small" style="text-align:center">
+                Após pagar, toque no botão abaixo para enviar o comprovante no WhatsApp.
+              </div>
+              <button class="btn" id="whatsBtn" type="button">Enviar comprovante no WhatsApp</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    const fmt = new Intl.NumberFormat("pt-BR", {style:"currency", currency:"BRL"});
+    const PIX = { name: "LIDIO OTO ROOS", city: "BRASIL", key: "32522134949", txid: "BODASOURO" };
+    const WHATS = "5544991024035";
+
+    function load(){
+      const raw = localStorage.getItem("bodas_ouro_checkout");
+      if (!raw){ alert("Carrinho vazio. Volte e selecione um presente."); window.location.href = "index.html"; return null; }
+      try{ return JSON.parse(raw); } catch(e){ window.location.href = "index.html"; return null; }
+    }
+    function lineHTML(label, value){ return `<div class="row"><div class="muted">${label}</div><div><b>${value}</b></div></div>`; }
+
+    function buildSummary(data){
+      const el = document.getElementById("summary");
+      el.innerHTML = "";
+      el.insertAdjacentHTML("beforeend", lineHTML("Nome", data.buyer || "Convidado(a)"));
+      for (const it of data.items){
+        el.insertAdjacentHTML("beforeend", lineHTML(`${it.qty}× ${it.title}`, fmt.format(it.unit * it.qty)));
+      }
+      document.getElementById("total").textContent = fmt.format(data.total || 0);
+    }
+
+    function tlv(id, value){
+      const v = String(value);
+      const len = v.length.toString().padStart(2,"0");
+      return id + len + v;
+    }
+    function onlyAsciiUpper(s){
+      return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
+    }
+    function crc16(payload){
+      let crc = 0xFFFF;
+      for (let i=0;i<payload.length;i++){
+        crc ^= (payload.charCodeAt(i) << 8);
+        for (let j=0;j<8;j++){
+          crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+          crc &= 0xFFFF;
+        }
+      }
+      return crc.toString(16).toUpperCase().padStart(4,"0");
+    }
+    function pixPayload({key, name, city, amount, txid}){
+      const gui = tlv("00","br.gov.bcb.pix");
+      const k = tlv("01", key);
+      const desc = tlv("02", "Bodas de Ouro");
+      const mai = tlv("26", gui + k + desc);
+
+      const merchantName = tlv("59", onlyAsciiUpper(name).slice(0,25));
+      const merchantCity = tlv("60", onlyAsciiUpper(city).slice(0,15));
+      const amt = tlv("54", Number(amount).toFixed(2));
+      const addData = tlv("62", tlv("05", (txid || "BODAS").slice(0,25)));
+
+      const payloadNoCrc =
+        tlv("00","01") +
+        tlv("01","12") +
+        mai +
+        tlv("52","0000") +
+        tlv("53","986") +
+        amt +
+        tlv("58","BR") +
+        merchantName +
+        merchantCity +
+        addData +
+        "6304";
+
+      return payloadNoCrc + crc16(payloadNoCrc);
+    }
+
+    function buildWhatsLink(data){
+      const lines = [];
+      lines.push("Olá! Segue a confirmação do Pix das Bodas de Ouro 💛");
+      lines.push(`Nome: ${data.buyer}`);
+      lines.push("Itens:");
+      for (const it of data.items){
+        lines.push(`- ${it.qty}× ${it.title} (${fmt.format(it.unit * it.qty)})`);
+      }
+      lines.push(`Total: ${fmt.format(data.total)}`);
+      lines.push("Vou enviar o comprovante a seguir.");
+      return `https://wa.me/${WHATS}?text=${encodeURIComponent(lines.join("\n"))}`;
+    }
+
+    function copyText(txt){
+      navigator.clipboard.writeText(txt).then(()=> alert("Copiado!")).catch(()=>{
+        const ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        document.execCommand("copy"); ta.remove(); alert("Copiado!");
+      });
+    }
+
+    const data = load();
+    if (data){
+      buildSummary(data);
+      const payload = pixPayload({ key: PIX.key, name: PIX.name, city: PIX.city, amount: data.total || 0, txid: PIX.txid });
+
+      const qrel = document.getElementById("qrcode");
+      qrel.innerHTML = "";
+      new QRCode(qrel, { text: payload, width: 220, height: 220 });
+
+      document.getElementById("copyKey").addEventListener("click", ()=> copyText(PIX.key));
+      document.getElementById("copyPayload").addEventListener("click", ()=> copyText(payload));
+      document.getElementById("whatsBtn").addEventListener("click", ()=> { window.location.href = buildWhatsLink(data); });
+    }
+  </script>
+</body>
+</html>
